@@ -156,11 +156,11 @@ void FwUtilityPluginAudioProcessor::prepareToPlay (double sampleRate, int sample
     // initialisation that you need..
     
     gain.reset(sampleRate, 0.02);
-    reset();
-    
+    lpFilter.reset();
+    hpFilter.reset();
     
     panTransform = (*apvts.getRawParameterValue("pan")/200.0) + 0.5;
-   
+    gain = juce::Decibels::decibelsToGain(static_cast<float>(*apvts.getRawParameterValue("gain")));
     lp = *apvts.getRawParameterValue("lp");
     hp = *apvts.getRawParameterValue("hp");
     monoButton = *apvts.getRawParameterValue("mono");
@@ -241,15 +241,17 @@ void FwUtilityPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
       
         for (int i = 0; i < buffer.getNumSamples(); ++i)
         {
-            //panTransform = 0;
+            // Panning
             auto inputL = channelDataL[i];
             auto inputR = channelDataR[i];
             inputL = inputL * std::sqrt(1-panTransform);
             inputR = inputR * std::sqrt(panTransform);
             
-            //-3db pan. Need to multiple with sqrt2 to get 0 when centered
-            channelDataL[i] = inputL * std::sqrt(2)  * juce::Decibels::decibelsToGain(gain.getNextValue());
-            channelDataR[i] = inputR * std::sqrt(2) * juce::Decibels::decibelsToGain(gain.getNextValue());
+            // Apply gain
+            //-3db pan. Need to multiple with sqrt2 to get 0 when centered.
+            // 2 ch = 0.5 gain reduction
+            channelDataL[i] = inputL * std::sqrt(2)  * juce::Decibels::decibelsToGain(gain.getNextValue() * 0.5);
+            channelDataR[i] = inputR * std::sqrt(2) * juce::Decibels::decibelsToGain(gain.getNextValue() * 0.5);
  
         }
         
@@ -276,15 +278,26 @@ juce::AudioProcessorEditor* FwUtilityPluginAudioProcessor::createEditor()
 //==============================================================================
 void FwUtilityPluginAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+    //Save plugin parameters
+    juce::MemoryOutputStream stream(destData, false);
+    apvts.state.writeToStream(stream);
 }
 
 void FwUtilityPluginAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+    //Recall plugin parameters
+    
+    auto tree = juce::ValueTree::readFromData(data, size_t (sizeInBytes));
+   
+    if(tree.isValid())
+    {
+        apvts.state = tree;
+        panTransform = (*apvts.getRawParameterValue("pan")/200.0) + 0.5;
+        gain = juce::Decibels::decibelsToGain(static_cast<float>(*apvts.getRawParameterValue("gain")));
+        lp = *apvts.getRawParameterValue("lp");
+        hp = *apvts.getRawParameterValue("hp");
+        monoButton = *apvts.getRawParameterValue("mono");
+    }
 }
 
 //==============================================================================
@@ -294,11 +307,6 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
     return new FwUtilityPluginAudioProcessor();
 }
 
-void FwUtilityPluginAudioProcessor::reset()
-{
-    lpFilter.reset();
-    hpFilter.reset();
-}
 
 
 

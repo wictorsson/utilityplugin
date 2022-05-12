@@ -59,7 +59,7 @@ private:
     
     
     //Filters
-    void reset() override;
+  
     juce::dsp::StateVariableTPTFilter<float> lpFilter;
     juce::dsp::StateVariableTPTFilter<float> hpFilter;
     float lp;
