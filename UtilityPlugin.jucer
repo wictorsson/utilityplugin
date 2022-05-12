@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="kmkwJf" name="UtilityPlugin" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginName="F.W Utility">
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginName="F.W Utility"
+              pluginManufacturer="F.W">
   <MAINGROUP id="uiSAu9" name="UtilityPlugin">
     <GROUP id="{9D8C0147-5F79-1C88-978B-94EB55FDB78F}" name="Source">
       <FILE id="cxE8h9" name="PluginProcessor.cpp" compile="1" resource="0"
