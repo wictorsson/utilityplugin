@@ -34,7 +34,6 @@ FwUtilityPluginAudioProcessorEditor::FwUtilityPluginAudioProcessorEditor (FwUtil
     gainLabel.setJustificationType(juce::Justification::centred);
     gainDial.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     gainDial.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 72, 36);
-    gainDial.setRange(0.0,24.0,0.1);
     gainDial.setLookAndFeel(&customDialLAF);
     gainDialAttach = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "gain", gainDial);
     
@@ -44,7 +43,6 @@ FwUtilityPluginAudioProcessorEditor::FwUtilityPluginAudioProcessorEditor (FwUtil
     panLabel.setJustificationType(juce::Justification::centred);
     panDial.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     panDial.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 72, 36);
-    panDial.setRange(0.0,24.0,1.0);
     panDial.setLookAndFeel(&customDialLAF);
     panDialAttach = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "pan", panDial);
     
@@ -54,7 +52,6 @@ FwUtilityPluginAudioProcessorEditor::FwUtilityPluginAudioProcessorEditor (FwUtil
     lpLabel.setJustificationType(juce::Justification::centred);
     lpDial.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     lpDial.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 72, 36);
-    lpDial.setRange(500.0,20000.0,1.0);
     lpDial.setSkewFactorFromMidPoint(2000.0);
     lpDial.setLookAndFeel(&customDialLAF);
     lpDialAttach = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "lp", lpDial);
@@ -65,7 +62,6 @@ FwUtilityPluginAudioProcessorEditor::FwUtilityPluginAudioProcessorEditor (FwUtil
     hpLabel.setJustificationType(juce::Justification::centred);
     hpDial.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     hpDial.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 72, 36);
-    hpDial.setRange(500.0,20000.0,1.0);
     hpDial.setSkewFactorFromMidPoint(2000.0);
     hpDial.setLookAndFeel(&customDialLAF);
     hpDialAttach = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "hp", hpDial);
@@ -114,15 +110,14 @@ void FwUtilityPluginAudioProcessorEditor::resized()
     //auto bottomMargin = getHeight() * 0.25;
     auto dialSize = getWidth() * 0.4;
     
-    auto buttonWidth = getWidth()*0.18;
-    auto buttonHeight = getHeight()*0.08;
-    auto meterHeight = getHeight()*0.3;
-    auto meterWidth = getWidth()*0.015;
+    auto buttonWidth = getWidth() * 0.22;
+    auto buttonHeight = getHeight() * 0.1;
+    auto meterHeight = getHeight() * 0.3;
+    auto meterWidth = getWidth() * 0.015;
     
-    title.setBounds(0,0,40,40);
+    title.setBounds(0, 0, 40, 40);
     
     gainDial.setBounds(leftMargin, topMargin, dialSize, dialSize);
-    
     hMeterLeft.setBounds(gainDial.getX() + gainDial.getWidth(), topMargin, meterWidth, meterHeight);
     hMeterRight.setBounds(hMeterLeft.getX() + meterWidth * 1.8f , topMargin, meterWidth, meterHeight);
     
@@ -130,8 +125,8 @@ void FwUtilityPluginAudioProcessorEditor::resized()
     
         monoButton.setBounds(hMeterLeft.getX() + hMeterLeft.getWidth()  - buttonWidth * 0.5f, topMargin * 0.2f + hMeterLeft.getY() + hMeterLeft.getHeight(), buttonWidth , buttonHeight);
     
-    lpDial.setBounds(leftMargin, topMargin + monoButton.getY() + monoButton.getHeight()*1.2f, dialSize, dialSize);
-    hpDial.setBounds(lpDial.getX() + lpDial.getWidth() , topMargin + monoButton.getY() + monoButton.getHeight()*1.2f, dialSize, dialSize);
+    lpDial.setBounds(leftMargin, topMargin + monoButton.getY() + monoButton.getHeight() * 1.2f, dialSize, dialSize);
+    hpDial.setBounds(lpDial.getX() + lpDial.getWidth() , topMargin + monoButton.getY() + monoButton.getHeight() * 1.2f, dialSize, dialSize);
 
     //saveWindowSize();
 }

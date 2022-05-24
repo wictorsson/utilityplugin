@@ -41,16 +41,16 @@ FwUtilityPluginAudioProcessor::~FwUtilityPluginAudioProcessor()
 juce::AudioProcessorValueTreeState::ParameterLayout FwUtilityPluginAudioProcessor::createParameterLayout()
 {
     std::vector <std::unique_ptr<juce::RangedAudioParameter>> params;
-    auto pan = std::make_unique<juce::AudioParameterFloat>("pan", "Pan", -100, 100, 0);
+    auto pan = std::make_unique<juce::AudioParameterFloat>("pan", "Pan",juce::NormalisableRange<float>(-100, 100, 1),0);
     params.push_back(std::move(pan));
     
-    auto gain = std::make_unique<juce::AudioParameterFloat>("gain", "Gain", -18, 18, 0);
+    auto gain = std::make_unique<juce::AudioParameterFloat>("gain", "Gain",juce::NormalisableRange<float>( -18.0, 18.0, 0.1),0.0);
     params.push_back(std::move(gain));
     
-    auto lp = std::make_unique<juce::AudioParameterFloat>("lp", "LowPass", juce::NormalisableRange<float>(500.0f, 20000.0f, 1.0f, 0.2), 20000.0f);
+    auto lp = std::make_unique<juce::AudioParameterFloat>("lp", "LowPass", juce::NormalisableRange<float>(500.0, 20000.0, 1.0, 0.2), 20000.0);
     params.push_back(std::move(lp));
     
-    auto hp = std::make_unique<juce::AudioParameterFloat>("hp", "HighPass", juce::NormalisableRange<float>(10.0f, 18000.0f, 1.0f, 0.2), 10.0f);
+    auto hp = std::make_unique<juce::AudioParameterFloat>("hp", "HighPass", juce::NormalisableRange<float>(10.0, 18000.0, 1.0, 0.2), 10.0);
     params.push_back(std::move(hp));
     
     auto mono = std::make_unique<juce::AudioParameterBool>("mono", "Mono", false);
