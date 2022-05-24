@@ -69,7 +69,7 @@ void FwUtilityPluginAudioProcessor::parameterChanged(const juce::String& paramet
     if (parameterID == "gain")
     {
         gain.setTargetValue(newValue);
-        DBG(apvts.getRawParameterValue("gain")->load());
+    
     }
     
     if (parameterID == "lp")
@@ -155,6 +155,10 @@ void FwUtilityPluginAudioProcessor::prepareToPlay (double sampleRate, int sample
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+    rmsLevelLeft.reset(sampleRate, 0.7f);
+    rmsLevelRight.reset(sampleRate, 0.7f);
+    rmsLevelRight.setTargetValue(-100.0f);
+    rmsLevelLeft.setTargetValue(-100.0f);
     
     gain.reset(sampleRate, 0.02);
     lpFilter.reset();
@@ -210,6 +214,8 @@ bool FwUtilityPluginAudioProcessor::isBusesLayoutSupported (const BusesLayout& l
 void FwUtilityPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
+
+    
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
    
@@ -261,6 +267,30 @@ void FwUtilityPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
         hpFilter.setType(juce::dsp::StateVariableTPTFilterType::highpass);
         // ..do something to the data...
     }
+    
+    rmsLevelLeft.skip(buffer.getNumSamples());
+    rmsLevelRight.skip(buffer.getNumSamples());
+    {
+        
+        auto value = juce::Decibels::gainToDecibels(buffer.getRMSLevel(0, 0, buffer.getNumSamples()));
+
+        if (value < rmsLevelLeft.getCurrentValue())
+            rmsLevelLeft.setTargetValue(value);
+        else
+            rmsLevelLeft.setCurrentAndTargetValue(value);
+       
+    }
+    
+    {
+        auto value = juce::Decibels::gainToDecibels(buffer.getRMSLevel(1, 0, buffer.getNumSamples()));
+
+        
+        if (value < rmsLevelRight.getCurrentValue())
+            rmsLevelRight.setTargetValue(value);
+        else
+            rmsLevelRight.setCurrentAndTargetValue(value);
+       
+    }
 }
 
 //==============================================================================
@@ -299,6 +329,17 @@ void FwUtilityPluginAudioProcessor::setStateInformation (const void* data, int s
         hp = *apvts.getRawParameterValue("hp");
         monoButton = *apvts.getRawParameterValue("mono");
     }
+}
+
+float FwUtilityPluginAudioProcessor::getRmsValue(const int channel) const
+{
+    jassert(channel == 0 || channel == 1);
+    if (channel == 0)
+        return rmsLevelLeft.getCurrentValue();
+    if (channel == 1)
+        return rmsLevelRight.getCurrentValue();
+    return 0.0f;
+    
 }
 
 //==============================================================================

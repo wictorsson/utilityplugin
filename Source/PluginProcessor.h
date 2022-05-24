@@ -54,12 +54,12 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
     
     juce::AudioProcessorValueTreeState apvts;
-  
+    
+    float getRmsValue(const int channel) const;
 private:
-    
-    
+
     //Filters
-  
+    juce::LinearSmoothedValue<float> rmsLevelLeft, rmsLevelRight;
     juce::dsp::StateVariableTPTFilter<float> lpFilter;
     juce::dsp::StateVariableTPTFilter<float> hpFilter;
     float lp;

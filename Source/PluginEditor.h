@@ -11,17 +11,19 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "./LookAndFeel/DialLAF.h"
+#include "HLevelMeter.h"
 
 //==============================================================================
 /**
 */
-class FwUtilityPluginAudioProcessorEditor  : public juce::AudioProcessorEditor
+class FwUtilityPluginAudioProcessorEditor  : public juce::AudioProcessorEditor, public juce::Timer
 {
 public:
     FwUtilityPluginAudioProcessorEditor (FwUtilityPluginAudioProcessor&);
     ~FwUtilityPluginAudioProcessorEditor() override;
 
     //==============================================================================
+    void timerCallback() override;
     void paint (juce::Graphics&) override;
     void resized() override;
 
@@ -30,6 +32,8 @@ private:
     // access the processor object that created it.
     FwUtilityPluginAudioProcessor& audioProcessor;
     
+    Gui::HMeter hMeterLeft;
+    Gui::HMeter hMeterRight;
     juce::Slider gainDial;
     juce::Label gainLabel;
     juce::Slider panDial;
@@ -38,6 +42,7 @@ private:
     juce::Label lpLabel;
     juce::Slider hpDial;
     juce::Label hpLabel;
+    juce::Label title;
     
     juce::TextButton monoButton;
     
