@@ -47,10 +47,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout FwUtilityPluginAudioProcesso
     auto gain = std::make_unique<juce::AudioParameterFloat>("gain", "Gain", -18, 18, 0);
     params.push_back(std::move(gain));
     
-    auto lp = std::make_unique<juce::AudioParameterFloat>("lp", "LowPass", 500, 20000, 20000);
+    auto lp = std::make_unique<juce::AudioParameterFloat>("lp", "LowPass", juce::NormalisableRange<float>(500.0f, 20000.0f, 1.0f, 0.2), 20000.0f);
     params.push_back(std::move(lp));
     
-    auto hp = std::make_unique<juce::AudioParameterFloat>("hp", "HighPass", 10, 1800, 10);
+    auto hp = std::make_unique<juce::AudioParameterFloat>("hp", "HighPass", juce::NormalisableRange<float>(10.0f, 18000.0f, 1.0f, 0.2), 10.0f);
     params.push_back(std::move(hp));
     
     auto mono = std::make_unique<juce::AudioParameterBool>("mono", "Mono", false);
@@ -69,6 +69,7 @@ void FwUtilityPluginAudioProcessor::parameterChanged(const juce::String& paramet
     if (parameterID == "gain")
     {
         gain.setTargetValue(newValue);
+        DBG(apvts.getRawParameterValue("gain")->load());
     }
     
     if (parameterID == "lp")
@@ -270,9 +271,9 @@ bool FwUtilityPluginAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* FwUtilityPluginAudioProcessor::createEditor()
 {
-//    return new FwUtilityPluginAudioProcessorEditor (*this);
+    return new FwUtilityPluginAudioProcessorEditor (*this);
     
-    return new juce::GenericAudioProcessorEditor(*this);
+    //return new juce::GenericAudioProcessorEditor(*this);
 }
 
 //==============================================================================

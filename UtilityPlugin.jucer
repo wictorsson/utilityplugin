@@ -4,6 +4,10 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginName="F.W Utility"
               pluginManufacturer="F.W">
   <MAINGROUP id="uiSAu9" name="UtilityPlugin">
+    <GROUP id="{1A14CFD5-55D6-6E3A-505B-FEC1FCFEAFB7}" name="LookAndFeel">
+      <FILE id="jqmrWn" name="DialLAF.cpp" compile="1" resource="0" file="Source/LookAndFeel/DialLAF.cpp"/>
+      <FILE id="yEcrjQ" name="DialLAF.h" compile="0" resource="0" file="Source/LookAndFeel/DialLAF.h"/>
+    </GROUP>
     <GROUP id="{9D8C0147-5F79-1C88-978B-94EB55FDB78F}" name="Source">
       <FILE id="cxE8h9" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
