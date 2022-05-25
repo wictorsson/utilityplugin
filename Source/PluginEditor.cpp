@@ -110,8 +110,8 @@ void FwUtilityPluginAudioProcessorEditor::resized()
     //auto bottomMargin = getHeight() * 0.25;
     auto dialSize = getWidth() * 0.4;
     
-    auto buttonWidth = getWidth() * 0.22;
-    auto buttonHeight = getHeight() * 0.1;
+    auto buttonWidth = getWidth() * 0.15;
+    auto buttonHeight = getHeight() * 0.05;
     auto meterHeight = getHeight() * 0.3;
     auto meterWidth = getWidth() * 0.015;
     
@@ -123,7 +123,7 @@ void FwUtilityPluginAudioProcessorEditor::resized()
     
     panDial.setBounds(gainDial.getX() + gainDial.getWidth() + meterWidth, topMargin , dialSize, dialSize);
     
-        monoButton.setBounds(hMeterLeft.getX() + hMeterLeft.getWidth()  - buttonWidth * 0.5f, topMargin * 0.2f + hMeterLeft.getY() + hMeterLeft.getHeight(), buttonWidth , buttonHeight);
+        monoButton.setBounds(hMeterLeft.getX() + hMeterLeft.getWidth() + + hMeterRight.getWidth() - buttonWidth * 0.5f, topMargin * 0.2f + hMeterLeft.getY() + hMeterLeft.getHeight(), buttonWidth , buttonHeight);
     
     lpDial.setBounds(leftMargin, topMargin + monoButton.getY() + monoButton.getHeight() * 1.2f, dialSize, dialSize);
     hpDial.setBounds(lpDial.getX() + lpDial.getWidth() , topMargin + monoButton.getY() + monoButton.getHeight() * 1.2f, dialSize, dialSize);
