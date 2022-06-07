@@ -215,29 +215,29 @@ void FwUtilityPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
 {
     juce::ScopedNoDenormals noDenormals;
 
-    
+
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
-   
+
 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
     lpFilter.setCutoffFrequency(lp);
     hpFilter.setCutoffFrequency(hp);
-    
+
     auto audioBlock = juce::dsp::AudioBlock<float>(buffer);
     auto context = juce::dsp::ProcessContextReplacing<float>(audioBlock);
     lpFilter.process(context);
     hpFilter.process(context);
-    
+//
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
         auto* channelDataL = buffer.getWritePointer (0);
         auto* channelDataR = buffer.getWritePointer (1);
-        
+
         // Make mono
-        if(monoButton){
+        if(monoButton && totalNumInputChannels > 1){
             // add the right (1) to the left (0)
            buffer.addFrom(0, 0, buffer, 1, 0, buffer.getNumSamples());
             // copy the combined left (0) to the right (1)
@@ -245,51 +245,53 @@ void FwUtilityPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
             // apply 0.5 gain to both
             buffer.applyGain(0.5f);
         }
-      
+
         for (int i = 0; i < buffer.getNumSamples(); ++i)
         {
+            if(totalNumOutputChannels > 1)
+            {
             // Panning
             auto inputL = channelDataL[i];
             auto inputR = channelDataR[i];
             inputL = inputL * std::sqrt(1-panTransform);
             inputR = inputR * std::sqrt(panTransform);
-            
+
             // Apply gain
             //-3db pan. Need to multiple with sqrt2 to get 0 when centered.
             // 2 ch = 0.5 gain reduction
             channelDataL[i] = inputL * std::sqrt(2)  * juce::Decibels::decibelsToGain(gain.getNextValue() * 0.5);
             channelDataR[i] = inputR * std::sqrt(2) * juce::Decibels::decibelsToGain(gain.getNextValue() * 0.5);
- 
-        }
-        
+
+            }}
+
         //Filter
         lpFilter.setType(juce::dsp::StateVariableTPTFilterType::lowpass);
         hpFilter.setType(juce::dsp::StateVariableTPTFilterType::highpass);
         // ..do something to the data...
     }
-    
+
     rmsLevelLeft.skip(buffer.getNumSamples());
     rmsLevelRight.skip(buffer.getNumSamples());
     {
-        
+
         auto value = juce::Decibels::gainToDecibels(buffer.getRMSLevel(0, 0, buffer.getNumSamples()));
 
         if (value < rmsLevelLeft.getCurrentValue())
             rmsLevelLeft.setTargetValue(value);
         else
             rmsLevelLeft.setCurrentAndTargetValue(value);
-       
+
     }
-    
+
     {
         auto value = juce::Decibels::gainToDecibels(buffer.getRMSLevel(1, 0, buffer.getNumSamples()));
 
-        
+
         if (value < rmsLevelRight.getCurrentValue())
             rmsLevelRight.setTargetValue(value);
         else
             rmsLevelRight.setCurrentAndTargetValue(value);
-       
+
     }
 }
 
