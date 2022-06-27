@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="kmkwJf" name="UtilityPlugin" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginName="F.W Utility"
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginName="F.W-Utility"
               pluginManufacturer="F.W">
   <MAINGROUP id="uiSAu9" name="UtilityPlugin">
     <GROUP id="{1A14CFD5-55D6-6E3A-505B-FEC1FCFEAFB7}" name="LookAndFeel">
