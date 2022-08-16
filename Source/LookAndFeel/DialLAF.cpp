@@ -27,7 +27,7 @@ void CustomDial::drawRotarySlider(juce::Graphics& g, int x, int y, int width, in
     float angle = rotaryStartAngle + (sliderPos * (rotaryEndAngle - rotaryStartAngle));
     
     juce::Rectangle<float>dialArea(rx, ry, diameter, diameter);
-    g.setColour(juce::Colour::fromFloatRGBA(0.34f, 0.64f, 0.56f, 1.0f).darker(0.4f));
+    g.setColour(juce::Colour::fromFloatRGBA(0.2941f, 0.4784f, 0.2784f, 1.0f).darker(0.2f));
     g.fillEllipse(dialArea);
     
     g.setColour(juce::Colours::black.brighter(0.2f).withAlpha(0.1f));

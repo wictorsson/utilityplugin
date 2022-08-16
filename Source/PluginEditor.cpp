@@ -18,11 +18,11 @@ FwUtilityPluginAudioProcessorEditor::FwUtilityPluginAudioProcessorEditor (FwUtil
     // editor's size to whatever you need it to be.
     
     setResizable (true, true);
-    const float ratio = 3.0/ 4.0;
-    setResizeLimits (280,  juce::roundToInt (280.0 / ratio),
-                         500, juce::roundToInt (500.0 / ratio));
+    const float ratio = 4.0/ 3.0;
+    setResizeLimits (470,  juce::roundToInt (470.0 / ratio),
+                         650, juce::roundToInt (650.0 / ratio));
     getConstrainer()->setFixedAspectRatio (ratio);
-    setSize (300, 300/ratio);
+    setSize (550, 550/ratio);
     
     addAndMakeVisible(hMeterLeft);
     addAndMakeVisible(hMeterRight);
@@ -77,7 +77,7 @@ FwUtilityPluginAudioProcessorEditor::FwUtilityPluginAudioProcessorEditor (FwUtil
     
     monoButton.setColour(juce::TextButton::ColourIds::textColourOffId, juce::Colour::fromFloatRGBA(0.9f, 0.9f, 0.9f, 0.5f));
 
-    title.setText ("F.W Utility v1.0", juce::dontSendNotification);
+    title.setText ("F.W UTILITY v1.0", juce::dontSendNotification);
     title.setJustificationType(juce::Justification::left);
     title.setColour(0x1000281, juce::Colours::whitesmoke);
     title.setFont (juce::Font (10.0f));
@@ -96,39 +96,41 @@ FwUtilityPluginAudioProcessorEditor::~FwUtilityPluginAudioProcessorEditor()
 void FwUtilityPluginAudioProcessorEditor::paint (juce::Graphics& g)
 {
    
-    juce::Rectangle<int> background = getLocalBounds();
-    g.setGradientFill(juce::ColourGradient::vertical(juce::Colour::fromFloatRGBA(0.6f, 0.6f, 0.6f, 1.0), 0, juce::Colour::fromFloatRGBA(0.15f, 0.15f, 0.15f, 1.0), background.getBottom()));
+//    juce::Rectangle<int> background = getLocalBounds();
+//    g.setGradientFill(juce::ColourGradient::vertical(juce::Colour::fromFloatRGBA(0.6f, 0.6f, 0.6f, 1.0), 0, juce::Colour::fromFloatRGBA(0.15f, 0.15f, 0.15f, 1.0), background.getBottom()));
+//        g.fillRect(background);
     
-    g.fillRect(background);
+    g.fillAll (juce::Colour::fromFloatRGBA (0.08f, 0.08f, 0.08f, 1.0f));
    
 }
 
 void FwUtilityPluginAudioProcessorEditor::resized()
 {
-    auto leftMargin = getWidth() * 0.1;
-    auto topMargin = getHeight() * 0.11;
+    auto widthMargin = getWidth() * 0.12;
+    auto heightMargin = getHeight() * 0.1;
     //auto bottomMargin = getHeight() * 0.25;
-    auto dialSize = getWidth() * 0.4;
+    auto dialSize = getWidth() * 0.2;
     
-    auto buttonWidth = getWidth() * 0.15;
+    auto buttonWidth = getWidth() * 0.1;
     auto buttonHeight = getHeight() * 0.05;
-    auto meterHeight = getHeight() * 0.3;
-    auto meterWidth = getWidth() * 0.015;
+    auto meterHeight = getHeight() * 0.9 - heightMargin;
+    auto meterWidth = getWidth() * 0.045;
     
-    title.setBounds(0, 0, 40, 40);
+    title.setBounds(widthMargin * 0.1, heightMargin * 0.05, 80, 30);
     
-    gainDial.setBounds(leftMargin, topMargin, dialSize, dialSize);
-    hMeterLeft.setBounds(gainDial.getX() + gainDial.getWidth(), topMargin, meterWidth, meterHeight);
-    hMeterRight.setBounds(hMeterLeft.getX() + meterWidth * 1.8f , topMargin, meterWidth, meterHeight);
+    gainDial.setBounds(getWidth() * 0.2, heightMargin * 1.4, dialSize, dialSize);
+    hMeterLeft.setBounds(getWidth() * 0.5 - meterWidth, heightMargin, meterWidth, meterHeight);
+    hMeterRight.setBounds(hMeterLeft.getX() + meterWidth * 1.2 , heightMargin, meterWidth, meterHeight);
     
-    panDial.setBounds(gainDial.getX() + gainDial.getWidth() + meterWidth, topMargin , dialSize, dialSize);
+    panDial.setBounds(getWidth() * 0.2, heightMargin + getHeight()*0.4  , dialSize, dialSize);
     
-        monoButton.setBounds(hMeterLeft.getX() + hMeterLeft.getWidth() + + hMeterRight.getWidth() - buttonWidth * 0.5f, topMargin * 0.2f + hMeterLeft.getY() + hMeterLeft.getHeight(), buttonWidth , buttonHeight);
+    monoButton.setBounds(getWidth() * 0.2 + buttonWidth * 0.5, heightMargin + getHeight()*0.7 , buttonWidth , buttonHeight);
     
-    lpDial.setBounds(leftMargin, topMargin + monoButton.getY() + monoButton.getHeight() * 1.2f, dialSize, dialSize);
-    hpDial.setBounds(lpDial.getX() + lpDial.getWidth() , topMargin + monoButton.getY() + monoButton.getHeight() * 1.2f, dialSize, dialSize);
+    lpDial.setBounds(getWidth() * 0.6,  heightMargin + getHeight()*0.4, dialSize, dialSize);
+    hpDial.setBounds(getWidth() * 0.6 ,     heightMargin * 1.4, dialSize, dialSize);
 
     //saveWindowSize();
+   
 }
 
 void FwUtilityPluginAudioProcessorEditor::timerCallback()
