@@ -59,13 +59,14 @@ public:
 private:
 
     //Filters
-    juce::LinearSmoothedValue<float> rmsLevelLeft, rmsLevelRight;
+    juce::LinearSmoothedValue<float> rmsLevelLeft {-100.0f}, rmsLevelRight {-100.0f};
     juce::dsp::StateVariableTPTFilter<float> lpFilter;
     juce::dsp::StateVariableTPTFilter<float> hpFilter;
     float lp;
     float hp;
     //Gain & Pan
-    float panTransform{};
+   // float panTransform{};
+    juce::LinearSmoothedValue<float> panTransform;
     juce::LinearSmoothedValue<float> gain {0.01};
     bool monoButton{false};
    

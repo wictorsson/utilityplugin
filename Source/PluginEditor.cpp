@@ -18,11 +18,11 @@ FwUtilityPluginAudioProcessorEditor::FwUtilityPluginAudioProcessorEditor (FwUtil
     // editor's size to whatever you need it to be.
     
     setResizable (true, true);
-    const float ratio = 4.0/ 3.0;
-    setResizeLimits (470,  juce::roundToInt (470.0 / ratio),
+    const float ratio = 3.0/ 4.0;
+    setResizeLimits (300,  juce::roundToInt (300.0 / ratio),
                          650, juce::roundToInt (650.0 / ratio));
     getConstrainer()->setFixedAspectRatio (ratio);
-    setSize (550, 550/ratio);
+    setSize (300, 300/ratio);
     
     addAndMakeVisible(hMeterLeft);
     addAndMakeVisible(hMeterRight);
@@ -31,7 +31,6 @@ FwUtilityPluginAudioProcessorEditor::FwUtilityPluginAudioProcessorEditor (FwUtil
     addAndMakeVisible(gainDial);
     gainLabel.setText("GAIN", juce::dontSendNotification);
     gainLabel.attachToComponent(&gainDial, false);
-    gainLabel.setJustificationType(juce::Justification::centred);
     gainDial.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     gainDial.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 72, 36);
     gainDial.setLookAndFeel(&customDialLAF);
@@ -40,7 +39,6 @@ FwUtilityPluginAudioProcessorEditor::FwUtilityPluginAudioProcessorEditor (FwUtil
     addAndMakeVisible(panDial);
     panLabel.setText("BALANCE", juce::dontSendNotification);
     panLabel.attachToComponent(&panDial, false);
-    panLabel.setJustificationType(juce::Justification::centred);
     panDial.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     panDial.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 72, 36);
     panDial.setLookAndFeel(&customDialLAF);
@@ -49,7 +47,6 @@ FwUtilityPluginAudioProcessorEditor::FwUtilityPluginAudioProcessorEditor (FwUtil
     addAndMakeVisible(lpDial);
     lpLabel.setText("LOW PASS", juce::dontSendNotification);
     lpLabel.attachToComponent(&lpDial, false);
-    lpLabel.setJustificationType(juce::Justification::centred);
     lpDial.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     lpDial.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 72, 36);
     lpDial.setSkewFactorFromMidPoint(2000.0);
@@ -59,7 +56,6 @@ FwUtilityPluginAudioProcessorEditor::FwUtilityPluginAudioProcessorEditor (FwUtil
     addAndMakeVisible(hpDial);
     hpLabel.setText("HIGH PASS", juce::dontSendNotification);
     hpLabel.attachToComponent(&hpDial, false);
-    hpLabel.setJustificationType(juce::Justification::centred);
     hpDial.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     hpDial.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 72, 36);
     hpDial.setSkewFactorFromMidPoint(2000.0);
@@ -77,12 +73,22 @@ FwUtilityPluginAudioProcessorEditor::FwUtilityPluginAudioProcessorEditor (FwUtil
     
     monoButton.setColour(juce::TextButton::ColourIds::textColourOffId, juce::Colour::fromFloatRGBA(0.9f, 0.9f, 0.9f, 0.5f));
 
+    
+    
+    
+    for(auto* label : {&gainLabel, &panLabel, &lpLabel, &hpLabel,&title})
+    {
+        addAndMakeVisible(label);
+        label->setJustificationType(juce::Justification::centred);
+        label->setFont (juce::Font (12.0f, juce::Font::bold));
+    }
+    
     title.setText ("F.W UTILITY v1.0", juce::dontSendNotification);
-    title.setJustificationType(juce::Justification::left);
     title.setColour(0x1000281, juce::Colours::whitesmoke);
+    title.setInterceptsMouseClicks(false, false);
+    title.setJustificationType(juce::Justification::topLeft);
     title.setFont (juce::Font (10.0f));
     title.setInterceptsMouseClicks(false, false);
-    addAndMakeVisible (title);
     
 }
 
@@ -95,10 +101,6 @@ FwUtilityPluginAudioProcessorEditor::~FwUtilityPluginAudioProcessorEditor()
 //==============================================================================
 void FwUtilityPluginAudioProcessorEditor::paint (juce::Graphics& g)
 {
-   
-//    juce::Rectangle<int> background = getLocalBounds();
-//    g.setGradientFill(juce::ColourGradient::vertical(juce::Colour::fromFloatRGBA(0.6f, 0.6f, 0.6f, 1.0), 0, juce::Colour::fromFloatRGBA(0.15f, 0.15f, 0.15f, 1.0), background.getBottom()));
-//        g.fillRect(background);
     
     g.fillAll (juce::Colour::fromFloatRGBA (0.08f, 0.08f, 0.08f, 1.0f));
    
@@ -106,31 +108,24 @@ void FwUtilityPluginAudioProcessorEditor::paint (juce::Graphics& g)
 
 void FwUtilityPluginAudioProcessorEditor::resized()
 {
-    auto widthMargin = getWidth() * 0.12;
-    auto heightMargin = getHeight() * 0.1;
-    //auto bottomMargin = getHeight() * 0.25;
-    auto dialSize = getWidth() * 0.2;
-    
-    auto buttonWidth = getWidth() * 0.1;
-    auto buttonHeight = getHeight() * 0.05;
-    auto meterHeight = getHeight() * 0.9 - heightMargin;
-    auto meterWidth = getWidth() * 0.045;
-    
-    title.setBounds(widthMargin * 0.1, heightMargin * 0.05, 80, 30);
-    
-    gainDial.setBounds(getWidth() * 0.2, heightMargin * 1.4, dialSize, dialSize);
-    hMeterLeft.setBounds(getWidth() * 0.5 - meterWidth, heightMargin, meterWidth, meterHeight);
-    hMeterRight.setBounds(hMeterLeft.getX() + meterWidth * 1.2 , heightMargin, meterWidth, meterHeight);
-    
-    panDial.setBounds(getWidth() * 0.2, heightMargin + getHeight()*0.4  , dialSize, dialSize);
-    
-    monoButton.setBounds(getWidth() * 0.2 + buttonWidth * 0.5, heightMargin + getHeight()*0.7 , buttonWidth , buttonHeight);
-    
-    lpDial.setBounds(getWidth() * 0.6,  heightMargin + getHeight()*0.4, dialSize, dialSize);
-    hpDial.setBounds(getWidth() * 0.6 ,     heightMargin * 1.4, dialSize, dialSize);
+    juce::Rectangle<int> bounds = getLocalBounds();
 
-    //saveWindowSize();
+    title.setBounds(bounds);
+    int margin = bounds.getWidth()/20;
+    juce::Rectangle<int> metersBounds = bounds.removeFromRight(getWidth()/4);
+    juce::Rectangle<int> meterBounds = metersBounds.removeFromRight(metersBounds.getWidth()/2);
+    hMeterRight.setBounds(meterBounds.reduced(margin));
+    hMeterLeft.setBounds(hMeterRight.getX() - hMeterRight.getWidth() * 1.2 , hMeterRight.getY(), hMeterRight.getWidth(), hMeterRight.getHeight());
+    
+    juce::Rectangle<int> leftBounds = bounds.removeFromLeft(getWidth()/4).removeFromTop(getHeight()/4);
+    gainDial.setBounds(leftBounds.getX() + leftBounds.getWidth()/1.5f ,leftBounds.getY() + leftBounds.getHeight()/2.5f, leftBounds.getWidth()*1.5f,leftBounds.getHeight()*1.5f);
    
+    panDial.setBounds(gainDial.getX() + gainDial.getWidth(), gainDial.getY() + gainDial.getHeight()/6,gainDial.getWidth()/1.5f,gainDial.getHeight()/1.5f);
+    
+    
+    hpDial.setBounds(gainDial.getX() + gainDial.getWidth()/6, panDial.getY() + gainDial.getHeight()*1.2f ,panDial.getWidth(),panDial.getHeight());
+    
+    lpDial.setBounds(panDial.getX() , hpDial.getY() ,panDial.getWidth(),panDial.getHeight());
 }
 
 void FwUtilityPluginAudioProcessorEditor::timerCallback()

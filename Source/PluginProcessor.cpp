@@ -41,19 +41,19 @@ FwUtilityPluginAudioProcessor::~FwUtilityPluginAudioProcessor()
 juce::AudioProcessorValueTreeState::ParameterLayout FwUtilityPluginAudioProcessor::createParameterLayout()
 {
     std::vector <std::unique_ptr<juce::RangedAudioParameter>> params;
-    auto pan = std::make_unique<juce::AudioParameterFloat>("pan", "Pan",juce::NormalisableRange<float>(-100, 100, 1),0);
+    auto pan = std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{"pan",1}, "Pan",juce::NormalisableRange<float>(-100.0f, 100.0f, 1.0f),0.0f);
     params.push_back(std::move(pan));
     
-    auto gain = std::make_unique<juce::AudioParameterFloat>("gain", "Gain",juce::NormalisableRange<float>( -18.0, 18.0, 0.1),0.0);
+    auto gain = std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{"gain",1}, "Gain",juce::NormalisableRange<float>( -18.0, 18.0, 0.1),0.0);
     params.push_back(std::move(gain));
     
-    auto lp = std::make_unique<juce::AudioParameterFloat>("lp", "LowPass", juce::NormalisableRange<float>(500.0, 20000.0, 1.0, 0.2), 20000.0);
+    auto lp = std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{"lp",1}, "LowPass", juce::NormalisableRange<float>(500.0, 20000.0, 1.0, 0.2), 20000.0);
     params.push_back(std::move(lp));
     
-    auto hp = std::make_unique<juce::AudioParameterFloat>("hp", "HighPass", juce::NormalisableRange<float>(10.0, 18000.0, 1.0, 0.2), 10.0);
+    auto hp = std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{"hp",1}, "HighPass", juce::NormalisableRange<float>(10.0, 18000.0, 1.0, 0.2), 10.0);
     params.push_back(std::move(hp));
     
-    auto mono = std::make_unique<juce::AudioParameterBool>("mono", "Mono", false);
+    auto mono = std::make_unique<juce::AudioParameterBool>(juce::ParameterID{"mono",1}, "Mono", false);
     params.push_back(std::move(mono));
     
     return {params.begin(), params.end()};
@@ -164,7 +164,8 @@ void FwUtilityPluginAudioProcessor::prepareToPlay (double sampleRate, int sample
     lpFilter.reset();
     hpFilter.reset();
     
-    panTransform = (*apvts.getRawParameterValue("pan")/200.0) + 0.5;
+    panTransform.reset(sampleRate, 0.02);
+    panTransform.setTargetValue((*apvts.getRawParameterValue("pan")/200.0) + 0.5);
     gain = juce::Decibels::decibelsToGain(static_cast<float>(*apvts.getRawParameterValue("gain")));
     lp = *apvts.getRawParameterValue("lp");
     hp = *apvts.getRawParameterValue("hp");
@@ -253,8 +254,8 @@ void FwUtilityPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
             // Panning
             auto inputL = channelDataL[i];
             auto inputR = channelDataR[i];
-            inputL = inputL * std::sqrt(1-panTransform);
-            inputR = inputR * std::sqrt(panTransform);
+            inputL = inputL * std::sqrt(1-panTransform.getNextValue());
+            inputR = inputR * std::sqrt(panTransform.getNextValue());
 
             // Apply gain
             //-3db pan. Need to multiple with sqrt2 to get 0 when centered.
@@ -321,15 +322,10 @@ void FwUtilityPluginAudioProcessor::setStateInformation (const void* data, int s
     //Recall plugin parameters
     
     auto tree = juce::ValueTree::readFromData(data, size_t (sizeInBytes));
-   
+    
     if(tree.isValid())
     {
         apvts.state = tree;
-        panTransform = (*apvts.getRawParameterValue("pan")/200.0) + 0.5;
-        gain = juce::Decibels::decibelsToGain(static_cast<float>(*apvts.getRawParameterValue("gain")));
-        lp = *apvts.getRawParameterValue("lp");
-        hp = *apvts.getRawParameterValue("hp");
-        monoButton = *apvts.getRawParameterValue("mono");
     }
 }
 

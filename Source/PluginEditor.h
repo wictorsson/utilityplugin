@@ -32,26 +32,14 @@ private:
     // access the processor object that created it.
     FwUtilityPluginAudioProcessor& audioProcessor;
     
-    Gui::HMeter hMeterLeft;
-    Gui::HMeter hMeterRight;
-    juce::Slider gainDial;
-    juce::Label gainLabel;
-    juce::Slider panDial;
-    juce::Label panLabel;
-    juce::Slider lpDial;
-    juce::Label lpLabel;
-    juce::Slider hpDial;
-    juce::Label hpLabel;
-    juce::Label title;
-    
+    Gui::HMeter hMeterLeft, hMeterRight;
+    juce::Slider gainDial, panDial, lpDial, hpDial;
+    juce::Label gainLabel,panLabel,lpLabel,hpLabel, title;
     juce::TextButton monoButton;
     
-    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> gainDialAttach;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> panDialAttach;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> lpDialAttach;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> hpDialAttach;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> monoButtonAttach;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> gainDialAttach,panDialAttach,lpDialAttach, hpDialAttach;
     
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment>monoButtonAttach;
     
     CustomDial customDialLAF;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FwUtilityPluginAudioProcessorEditor)
