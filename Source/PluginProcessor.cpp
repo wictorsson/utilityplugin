@@ -44,13 +44,13 @@ juce::AudioProcessorValueTreeState::ParameterLayout FwUtilityPluginAudioProcesso
     auto pan = std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{"pan",1}, "Pan",juce::NormalisableRange<float>(-100.0f, 100.0f, 1.0f),0.0f);
     params.push_back(std::move(pan));
     
-    auto gain = std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{"gain",1}, "Gain",juce::NormalisableRange<float>( -18.0, 18.0, 0.1),0.0);
+    auto gain = std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{"gain",1}, "Gain",juce::NormalisableRange<float>( -18.0f, 18.0f, 0.1f),0.0f);
     params.push_back(std::move(gain));
     
-    auto lp = std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{"lp",1}, "LowPass", juce::NormalisableRange<float>(500.0, 20000.0, 1.0, 0.2), 20000.0);
+    auto lp = std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{"lp",1}, "LowPass", juce::NormalisableRange<float>(500.0f, 20000.0f, 1.0f, 0.35f), 20000.0f);
     params.push_back(std::move(lp));
     
-    auto hp = std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{"hp",1}, "HighPass", juce::NormalisableRange<float>(10.0, 18000.0, 1.0, 0.2), 10.0);
+    auto hp = std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{"hp",1}, "HighPass", juce::NormalisableRange<float>(10.0f, 18000.0f, 1.0f, 0.35f), 10.0f);
     params.push_back(std::move(hp));
     
     auto mono = std::make_unique<juce::AudioParameterBool>(juce::ParameterID{"mono",1}, "Mono", false);
@@ -319,8 +319,12 @@ void FwUtilityPluginAudioProcessor::getStateInformation (juce::MemoryBlock& dest
 
 void FwUtilityPluginAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    //Recall plugin parameters
+    if (auto* editor = getActiveEditor())
+    {
+        editor->setSize (getEditorWidth(), getEditorHeight());
+    }
     
+    //Recall plugin parameters
     auto tree = juce::ValueTree::readFromData(data, size_t (sizeInBytes));
     
     if(tree.isValid())

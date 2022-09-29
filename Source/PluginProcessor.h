@@ -56,6 +56,26 @@ public:
     juce::AudioProcessorValueTreeState apvts;
     
     float getRmsValue(const int channel) const;
+    
+    // Saving GUI resize
+    int getEditorWidth()
+    {
+        auto size = apvts.state.getOrCreateChildWithName ("lastSize", nullptr);
+        return size.getProperty ("width", 280);
+    }
+    int getEditorHeight()
+    {
+        auto size = apvts.state.getOrCreateChildWithName ("lastSize", nullptr);
+        return size.getProperty ("height", 280);
+    }
+
+    void setEditorSize (int width, int height)
+    {
+        auto size = apvts.state.getOrCreateChildWithName ("lastSize", nullptr);
+        size.setProperty ("width", width, nullptr);
+        size.setProperty ("height", height, nullptr);
+    }
+    
 private:
 
     //Filters
